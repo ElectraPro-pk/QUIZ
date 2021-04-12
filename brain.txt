@@ -1,0 +1,598 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package brainmania;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.PathTransition;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView; 
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+
+/**
+ *
+ * @author mypc
+ */
+public class Brainmania extends Application {
+    Stage Window;
+    Scene home,selection,host,private_key,meeting,question;
+    String nick_name;
+    
+    @Override
+    public void start(Stage primaryStage) throws FileNotFoundException {
+        Window=primaryStage;
+        
+        //home page
+        //calling logo
+        Image logo_home = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo_home_view = new ImageView(logo_home);
+        logo_home_view.setFitHeight(50); 
+        logo_home_view.setFitWidth(200);
+//        GridPane.setConstraints(logo_home_view, 0, 0);
+        
+        //Adding label
+        Label name_lbl=new Label("Enter Nickname");
+        name_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        name_lbl.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(name_lbl, 0, 2);
+        
+        //Text field to input name
+        final TextField name_txt=new TextField();
+        name_txt.setPromptText("Enter your nickname!!");
+        name_txt.setFont(Font.font ("Century Gothic"));
+        name_txt.setStyle("-fx-text-box-border:BLACK; -fx-focus-color:BLACK;");
+//        GridPane.setConstraints(name_txt, 0, 3);
+        
+        //Button to navigate to next scene
+        Button btn = new Button();
+        btn.setText("Lets Brain");
+        btn.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        btn.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE;");
+//        GridPane.setConstraints(btn, 0, 4);
+        btn.setDefaultButton(true);
+        
+        //Button action handler 
+        btn.setOnAction(e ->{
+        nick_name = name_txt.getText();
+        System.out.println(name_txt);
+            try {
+                selectionPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    });
+        
+        VBox fields=new VBox(25);
+        fields.getChildren().addAll(logo_home_view,name_lbl,name_txt,btn);
+        fields.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(fields, 0, 0);
+            
+        GridPane name_grid=new GridPane();
+        name_grid.setPadding(new Insets(10, 10, 10, 10));
+        name_grid.setAlignment(Pos.CENTER);
+        name_grid.setVgap(5);
+        name_grid.setHgap(5);
+        name_grid.setStyle("-fx-background-color: CADETBLUE");
+        name_grid.getChildren().addAll(fields);   
+        
+        //Home page scene
+        home = new Scene(name_grid, 500, 500);
+        
+        Window.setTitle("BrainMania");
+        Window.setScene(home);
+        Window.show();
+        
+    }
+    
+    public void selectionPage() throws FileNotFoundException{
+        //calling logo
+        Image logo_host = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo_selection_view = new ImageView(logo_host);
+        logo_selection_view.setFitHeight(50); 
+        logo_selection_view.setFitWidth(200); 
+//        GridPane.setConstraints(logo_selection_view, 0, 0);
+        
+         //calling input value from previous scene
+        Label nick_name_lbl=new Label("Hi "+ nick_name +" !!");
+        nick_name_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        nick_name_lbl.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(nick_name_lbl, 0, 2);
+        
+        Button host_btn = new Button();
+        host_btn.setText("Host Game");
+        host_btn.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        host_btn.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+//        GridPane.setConstraints(host_btn, 0, 3);
+        
+        host_btn.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button host_type = (Button)node;
+            System.out.println(host_type.getText());
+            try {
+                hostPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        Button enter_btn = new Button();
+        enter_btn.setText("Enter Game");
+        enter_btn.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        enter_btn.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+//        GridPane.setConstraints(enter_btn,0,4);
+        
+        enter_btn.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button enter_type = (Button)node;
+            System.out.println(enter_type.getText());
+            try {
+                privatekeyPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        VBox fields=new VBox(25);
+        fields.getChildren().addAll(logo_selection_view,nick_name_lbl,host_btn,enter_btn);
+        fields.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(fields, 0, 0);
+        
+        
+        GridPane name_grid=new GridPane();
+        name_grid.setPadding(new Insets(10, 10, 10, 10));
+        name_grid.setAlignment(Pos.CENTER);
+        name_grid.setVgap(5);
+        name_grid.setHgap(5);
+        name_grid.setStyle("-fx-background-color: CADETBLUE");
+        name_grid.getChildren().addAll(fields);   
+        
+        //Home page scene
+        selection = new Scene(name_grid, 500, 500);
+        
+        Window.setTitle("BrainMania");
+        Window.setScene(selection);
+        Window.show();
+        
+    }
+    
+    public void privatekeyPage() throws FileNotFoundException{
+        //calling logo
+        Image logo = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo_view = new ImageView(logo);
+        logo_view.setFitHeight(50); 
+        logo_view.setFitWidth(200); 
+//        GridPane.setConstraints(logo_view, 0, 0);
+        
+         //calling input value from previous scene
+        Label private_lbl=new Label("Enter Private key");
+        private_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        private_lbl.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(private_lbl, 0, 2);
+        
+        //Text field to input name
+        final TextField private_key_txt=new TextField();
+        private_key_txt.setPromptText("Enter the private key!");
+        private_key_txt.setFont(Font.font ("Century Gothic"));
+        private_key_txt.setStyle("-fx-text-box-border:BLACK; -fx-focus-color:BLACK;");
+//        GridPane.setConstraints(private_key_txt, 0, 3);
+        
+        VBox fields=new VBox(25);
+        fields.getChildren().addAll(logo_view,private_lbl,private_key_txt);
+        fields.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(fields, 0, 0);
+        
+        GridPane name_grid=new GridPane();
+        name_grid.setPadding(new Insets(10, 10, 10, 10));
+        name_grid.setAlignment(Pos.CENTER);
+        name_grid.setVgap(5);
+        name_grid.setHgap(5);
+        name_grid.setStyle("-fx-background-color: CADETBLUE");
+        name_grid.getChildren().addAll(fields);   
+        
+        //Home page scene
+        private_key = new Scene(name_grid, 500, 500);
+        
+        Window.setTitle("BrainMania");
+        Window.setScene(private_key);
+        Window.show();
+        
+    }
+    
+    public void hostPage() throws FileNotFoundException{
+        //host page
+        
+        //calling logo
+        Image logo_host = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo__host_view = new ImageView(logo_host);
+        logo__host_view.setFitHeight(50); 
+        logo__host_view.setFitWidth(200); 
+//        GridPane.setConstraints(logo__host_view, 0, 0);
+        
+        //calling input value from previous scene
+        Label nick_name_lbl=new Label("Hi "+ nick_name +" !!");
+        nick_name_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        nick_name_lbl.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(nick_name_lbl, 0, 2);
+        
+        //Label foe selecting number of questions
+        Label no_of_questions=new Label("Select number of questions");
+        no_of_questions.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        no_of_questions.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(no_of_questions, 0, 3);
+        
+        //Button to select number of questions
+        Button no_question_btn1 = new Button();
+        no_question_btn1.setText("5");
+        no_question_btn1.setShape(new Circle(2));
+        no_question_btn1.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        no_question_btn1.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 50em; " +
+                "-fx-min-width: 50px; " +
+                "-fx-min-height: 50px; ");
+        
+        no_question_btn1.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_1 = (Button)node;
+            System.out.println(type_1.getText());
+        });
+        
+        Button no_question_btn2 = new Button();
+        no_question_btn2.setText("10");
+        no_question_btn2.setShape(new Circle(2));
+        no_question_btn2.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        no_question_btn2.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 50em; " +
+                "-fx-min-width: 50px; " +
+                "-fx-min-height: 50px; ");
+        
+        no_question_btn2.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_2 = (Button)node;
+            System.out.println(type_2.getText());
+        });
+        
+        Button no_question_btn3 = new Button();
+        no_question_btn3.setText("15");
+        no_question_btn3.setShape(new Circle(2));
+        no_question_btn3.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        no_question_btn3.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 50em; " +
+                "-fx-min-width: 50px; " +
+                "-fx-min-height: 50px; ");
+        
+        no_question_btn3.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_3 = (Button)node;
+            System.out.println(type_3.getText());
+        });
+
+        HBox question_btns = new HBox(25); // 5 is the spacing between elements in the VBox
+        question_btns.getChildren().addAll(no_question_btn1,no_question_btn2,no_question_btn3);
+//        GridPane.setConstraints(question_btns, 0, 4);
+        
+        //Label to select the category of questions
+        Label category_lbl=new Label("Select a category");
+        category_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        category_lbl.setStyle("-fx-text-fill:BLACK");
+//        GridPane.setConstraints(category_lbl, 0, 5);
+        
+        //Button to select the category of questions
+        Button category_btn1 = new Button();
+        category_btn1.setText("Sports");
+        category_btn1.setShape(new Circle(2));
+        category_btn1.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        category_btn1.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 80em; " +
+                "-fx-min-width: 80px; " +
+                "-fx-min-height: 80px; ");
+        
+        category_btn1.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button category1 = (Button)node;
+            System.out.println(category1.getText());
+            try {
+                meetingPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        Button category_btn2 = new Button();
+        category_btn2.setText("Movies");
+        category_btn2.setShape(new Circle(2));
+        category_btn2.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        category_btn2.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 80em; " +
+                "-fx-min-width: 80px; " +
+                "-fx-min-height: 80px; ");
+        
+        category_btn2.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button category2 = (Button)node;
+            System.out.println(category2.getText());
+            try {
+                meetingPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        
+        Button category_btn3 = new Button();
+        category_btn3.setText("Animals");
+        category_btn3.setShape(new Circle(2));
+        category_btn3.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        category_btn3.setStyle("-fx-text-fill:BLACK;"+
+                "-fx-background-radius: 80em; " +
+                "-fx-min-width: 80px; " +
+                "-fx-min-height: 80px; ");
+        
+        category_btn3.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button category3 = (Button)node;
+            System.out.println(category3.getText());
+            try {
+                meetingPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        
+        HBox category_btns = new HBox(25); // 5 is the spacing between elements in the VBox
+        category_btns.getChildren().addAll(category_btn1,category_btn2,category_btn3);
+//        GridPane.setConstraints(category_btns, 0, 6);
+        
+        VBox fields=new VBox(25);
+        fields.getChildren().addAll(logo__host_view,nick_name_lbl,no_of_questions,question_btns,category_lbl,category_btns);
+        GridPane.setConstraints(fields, 0, 0);
+        
+        GridPane host_grid=new GridPane();
+        host_grid.setPadding(new Insets(10, 10, 10, 10));
+        host_grid.setAlignment(Pos.CENTER);
+        host_grid.setVgap(5);
+        host_grid.setHgap(5);
+        host_grid.setStyle("-fx-background-color: CADETBLUE");
+//        host_grid.getChildren().addAll(logo__host_view,nick_name_lbl,no_of_questions,
+//                question_btns,category_lbl,category_btns);
+        host_grid.getChildren().addAll(fields);
+                
+        //Host page scene
+        host = new Scene(host_grid, 500, 500);
+        
+        Window.setScene(host);
+        
+        
+    }
+    
+    public void meetingPage() throws FileNotFoundException{
+        //host page	
+    
+        //calling logo
+        Image logo = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo_view = new ImageView(logo);
+        logo_view.setFitHeight(50); 
+        logo_view.setFitWidth(200); 
+        GridPane.setConstraints(logo_view, 0, 0);
+        
+        //Button to select number of questions
+        Button start_btn = new Button();
+        start_btn.setText("Start Game");
+        //question_btn1.setShape(new Circle(2));
+        start_btn.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        start_btn.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+        GridPane.setConstraints(start_btn, 0, 1);
+        
+        start_btn.setOnAction(event ->{
+            try {
+                questionPage();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Brainmania.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        VBox fields=new VBox(25);
+        fields.setAlignment(Pos.CENTER);
+        fields.getChildren().addAll(logo_view,start_btn);
+        
+        GridPane host_grid=new GridPane();
+        host_grid.setPadding(new Insets(10, 10, 10, 10));
+        host_grid.setAlignment(Pos.CENTER);
+        host_grid.setVgap(5);
+        host_grid.setHgap(5);
+        host_grid.setStyle("-fx-background-color: CADETBLUE");
+//        host_grid.getChildren().addAll(logo__host_view,nick_name_lbl,no_of_questions,
+//                question_btns,category_lbl,category_btns);
+        host_grid.getChildren().addAll(fields);
+                
+        //Host page scene
+        meeting = new Scene(host_grid, 500, 500);
+        
+        Window.setScene(meeting);
+    }
+
+    public void questionPage() throws FileNotFoundException{
+        //host page	
+    
+        //calling logo
+        Image logo_host = new Image(new FileInputStream("images/BrainMania.png"));
+        ImageView logo_view = new ImageView(logo_host);
+        logo_view.setFitHeight(50); 
+        logo_view.setFitWidth(200); 
+//        GridPane.setConstraints(logo__host_view, 0, 0);
+        
+        //Label foe selecting number of questions
+        Label  questions=new Label("Question: how many chooths are there?");
+        questions.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        questions.setStyle("-fx-text-fill:BLACK");
+        
+        //Button to select number of questions
+        Button question_btn1 = new Button();
+        question_btn1.setText("5");
+        //question_btn1.setShape(new Circle(2));
+        question_btn1.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        question_btn1.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+       
+        
+        question_btn1.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_1 = (Button)node;
+            System.out.println(type_1.getText());
+        });
+        
+        Button question_btn2 = new Button();
+        question_btn2.setText("10");
+        //question_btn2.setShape(new Circle(2));
+        question_btn2.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        question_btn2.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+        
+        question_btn2.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_2 = (Button)node;
+            System.out.println(type_2.getText());
+        });
+        
+        Button question_btn3 = new Button();
+        question_btn3.setText("15");
+        //question_btn3.setShape(new Circle(2));
+        question_btn3.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        question_btn3.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE; -fx-pref-width: 200px;");
+        
+        question_btn3.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_3 = (Button)node;
+            System.out.println(type_3.getText());
+        });
+        
+        Button question_btn4 = new Button();
+        question_btn4.setText("42");
+        question_btn4.setFont(Font.font ("Century Gothic",FontWeight.BOLD,16)); 
+        question_btn4.setStyle("-fx-background-color: BLACK; -fx-text-fill: WHITE;-fx-pref-width: 200px;");
+        
+        
+        question_btn4.setOnAction(event ->{
+            Object node = event.getSource(); //returns the object that generated the event
+            System.out.println(node instanceof Button); //prints true. demonstrates the source is a Button
+            //since the returned object is a Button you can cast it to one
+            Button type_4 = (Button)node;
+            System.out.println(type_4.getText());
+        });
+        
+        
+
+        HBox question_box1 = new HBox(25); // 5 is the spacing between elements in the VBox
+        question_box1.getChildren().addAll(question_btn1,question_btn2);
+//        GridPane.setConstraints(question_btns, 0, 4);
+
+        HBox question_box2 = new HBox(25); // 5 is the spacing between elements in the VBox
+        question_box2.getChildren().addAll(question_btn3,question_btn4);
+
+        Label  timer_lbl=new Label("'Time is ticking'");
+        timer_lbl.setFont(Font.font ("Century Gothic",FontWeight.BOLD,18));
+        timer_lbl.setStyle("-fx-text-fill:BLACK");
+        
+
+        StackPane root=new StackPane();
+
+        Path path = new Path();
+        path.getElements().add(new MoveTo(0, 180));
+        path.getElements().add(new CubicCurveTo(180, 180, 180, 180, 180, 180));
+
+        Circle circle = new Circle(90,180,10);
+        circle.setFill(Color.BLACK);
+
+        PathTransition ptr = new PathTransition();
+
+        ptr.setDuration(Duration.seconds(30));
+        ptr.setDelay(Duration.seconds(0));
+        ptr.setPath(path);
+        ptr.setNode(circle);
+        ptr.setCycleCount(1);
+        ptr.setAutoReverse(false);
+        ptr.play();
+
+        root.getChildren().addAll(path,circle);
+        
+        HBox timer = new HBox(25); 
+        timer.getChildren().addAll(root);
+        timer.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(timer,0, 1);
+            
+        
+        VBox fields=new VBox(25);
+        fields.getChildren().addAll(logo_view,questions,question_box1,question_box2,timer_lbl);
+        fields.setAlignment(Pos.CENTER);
+        GridPane.setConstraints(fields, 0, 0);
+        
+        GridPane host_grid=new GridPane();
+        host_grid.setPadding(new Insets(10, 10, 10, 10));
+        host_grid.setAlignment(Pos.CENTER);
+        host_grid.setVgap(5);
+        host_grid.setHgap(5);
+        host_grid.setStyle("-fx-background-color: CADETBLUE");
+//        host_grid.getChildren().addAll(logo__host_view,nick_name_lbl,no_of_questions,
+//                question_btns,category_lbl,category_btns);
+        host_grid.getChildren().addAll(fields,timer);
+                
+        //Host page scene
+        question = new Scene(host_grid, 500, 500);
+        Window.setScene(question);
+    }
+    
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+}
